@@ -1,0 +1,118 @@
+#include "iostream"
+#include "fstream"
+
+using namespace std;
+
+ifstream in1("inputKey.txt");
+ifstream in2("alphabet.txt");
+ifstream in3("inputText.txt");
+ofstream out("output.txt");
+
+int main()
+{
+	setlocale(LC_ALL, "rus");
+	char *masKey = new char[50];
+	int k=0;
+
+	//1 - шифрование
+	//иначе - дешифрование
+	int shifr;
+	in1>>shifr;
+
+	while(in1>>masKey[k])
+	{
+		//out<<masKey[k];
+		k++;
+	}
+	in1.close();
+
+
+	for(int i=1; i<k; i++){
+		for(int j=0; j<i; j++){
+			if(masKey[i] == masKey[j])
+			{
+				for (int m=i; m<=k-1; masKey[m+1], m++) masKey[m]=masKey[m+1];
+				k--;
+			}
+		} }
+
+
+	out<<"Key: ";
+	for(int i=0; i<k; i++) out<<masKey[i]<<" ";
+
+
+		char *alphabet = new char[32];
+		char *fullAlphabet = new char[32];
+		int t=0, w=0;
+		int l=32-k, a=l;
+
+		while(in2>>alphabet[t])
+		{		
+			fullAlphabet[w] = alphabet[t];
+
+			for(int i=0; i<l; i++)
+			{
+				if(alphabet[t] == masKey[i])
+				{
+					for (int m=t; m<=t-1; alphabet[m+1], m++) alphabet[m]=alphabet[m+1];
+					t--;
+				}
+			}
+			t++;
+			w++;
+		}
+		in2.close();
+
+		out<<endl<<"alphabet: ";
+		for(int i=0; i<a; i++) out<<alphabet[i]<<" ";
+		out<<endl;
+
+		int j=0;
+		for(int i=k; i<32; i++)
+		{masKey[i]=alphabet[j]; j++;}
+
+		out<<"masKey:";
+		for(int i=0; i<32; i++)
+			out<<masKey[i]<<" ";
+
+		out<<endl<<"fullAlphabet:";
+		for(int i=0; i<32; i++)
+			out<<fullAlphabet[i]<<" ";
+
+
+		char *masText = new char[50];
+		int x=0;
+		out<<endl<<"Text: ";
+		while(in3>>masText[x])
+		{
+			out<<masText[x];
+			x++;
+		}
+		in3.close();
+
+		if(shifr == 1)
+		{
+			int b=0;
+			while(b<x) {
+				for(int i=0; i<32; i++)
+				{
+					if(masText[b] == fullAlphabet[i]) {masText[b]=masKey[i]; b++;}
+				}
+			}
+		}
+		else
+		{
+			int b=0;
+			while(b<x) {
+				for(int i=0; i<32; i++)
+				{
+					if(masText[b] == masKey[i]) {masText[b]=fullAlphabet[i]; b++;}
+				}
+			}
+		}
+
+		out<<endl<<"Answer: ";
+		for(int i=0; i<x; i++) out<<masText[i];	
+
+	out.close();
+}
